@@ -1,0 +1,8 @@
+config-version: 1.0.0.0
+prefix: "<dark_red><bold>CommandRestrictions</bold></dark_red> <gray><bold>▪</bold></gray> "
+reload: "<aqua>The plugin has been reloaded.</aqua>"
+invalid-settings: "<red>Unable to compare command ran due to invalid plugin settings.</red>"
+invalid-regex: "<red>Unable to check command against regex due to a null regex configured.</red>"
+blocked-command-player-message: "<red>The command you sent can only be ran through console.</red>"
+blocked-command-console-message: "<red>Blocked a command due to regex match:</red> <white><command></white>"
+blocked-text-console-message: "<red>Blocked a command containing blocked text:</red> <white><command></white>"

@@ -1,0 +1,14 @@
+config-version: 1.0.0.0
+# For development purposes only. May be useful for debugging regex though.
+debug: false
+# The name of the file (without the extension) to use from CommandRestrictions/locale
+locale: en_US
+# The configuration to check and block commands.
+entries:
+-   regex: (?:/luckperms|/lp|/perm|/perms|/permission|/permissions|/luckperms:luckperms|/luckperms:lp|/luckperms:perm|/luckperms:perms|/luckperms:permission|/luckperms:permissions) (?:user|group) [^ ]+ permission (?:set|settemp) ([^ ]+)
+    block-all-matches: false
+    blocked-text:
+    - "*"
+    - "luckperms.autoop"
+-   regex: /op|/execute|/stop|/minecraft:op|/minecraft:execute|/minecraft:stop
+    block-all-matches: true

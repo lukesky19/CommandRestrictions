@@ -1,0 +1,7 @@
+name: CommandRestrictions
+version: '1.0.0.0'
+main: com.github.lukesky19.commandRestrictions.CommandRestrictions
+api-version: '1.21'
+load: STARTUP
+authors: [ lukeskywlker19 ]
+depend: [ SkyLib ]
