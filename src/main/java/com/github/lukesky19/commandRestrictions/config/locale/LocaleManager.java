@@ -20,8 +20,8 @@ package com.github.lukesky19.commandRestrictions.config.locale;
 import com.github.lukesky19.commandRestrictions.CommandRestrictions;
 import com.github.lukesky19.commandRestrictions.config.settings.Settings;
 import com.github.lukesky19.commandRestrictions.config.settings.SettingsManager;
-import com.github.lukesky19.skylib.config.ConfigurationUtility;
-import com.github.lukesky19.skylib.format.FormatUtil;
+import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
+import com.github.lukesky19.skylib.api.configurate.ConfigurationUtility;
 import com.github.lukesky19.skylib.libs.configurate.ConfigurateException;
 import com.github.lukesky19.skylib.libs.configurate.yaml.YamlConfigurationLoader;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -83,7 +83,7 @@ public class LocaleManager {
         // Only load locale if plugin settings is valid.
         Settings settings = settingsManager.getSettings();
         if(settings == null || settings.locale() == null) {
-            logger.error(FormatUtil.format("<red>Failed to load plugin's locale due to invalid plugin settings.</red>"));
+            logger.error(AdventureUtil.serialize("<red>Failed to load plugin's locale due to invalid plugin settings.</red>"));
             return;
         }
 
@@ -121,37 +121,37 @@ public class LocaleManager {
         if(locale == null) return;
 
         if(locale.prefix() == null) {
-            logger.warn(FormatUtil.format("No prefix configured in locale file."));
+            logger.warn(AdventureUtil.serialize("No prefix configured in locale file."));
             locale = DEFAULT_LOCALE;
             return;
         }
 
         if(locale.invalidSettings() == null) {
-            logger.warn(FormatUtil.format("No invalid settings message configured in locale file."));
+            logger.warn(AdventureUtil.serialize("No invalid settings message configured in locale file."));
             locale = DEFAULT_LOCALE;
             return;
         }
 
         if(locale.invalidRegex() == null) {
-            logger.warn(FormatUtil.format("No invalid regex message configured in locale file."));
+            logger.warn(AdventureUtil.serialize("No invalid regex message configured in locale file."));
             locale = DEFAULT_LOCALE;
             return;
         }
 
         if(locale.blockedCommandPlayerMessage() == null) {
-            logger.warn(FormatUtil.format("No blocked player message configured in locale file."));
+            logger.warn(AdventureUtil.serialize("No blocked player message configured in locale file."));
             locale = DEFAULT_LOCALE;
             return;
         }
 
         if(locale.blockedCommandConsoleMessage() == null) {
-            logger.warn(FormatUtil.format("No blocked command console message configured in locale file."));
+            logger.warn(AdventureUtil.serialize("No blocked command console message configured in locale file."));
             locale = DEFAULT_LOCALE;
             return;
         }
 
         if(locale.blockedTextConsoleMessage() == null) {
-            logger.warn(FormatUtil.format("No blocked text console message configured in locale file."));
+            logger.warn(AdventureUtil.serialize("No blocked text console message configured in locale file."));
             locale = DEFAULT_LOCALE;
         }
     }

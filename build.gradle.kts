@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.lukesky19"
-version = "1.0.0.0"
+version = "1.1.0.0"
 
 repositories {
     mavenLocal()
@@ -21,8 +21,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
-    compileOnly("com.github.lukesky19:SkyLib:1.2.0.0")
+    compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
+    compileOnly("com.github.lukesky19:SkyLib:1.3.0.0")
     compileOnly("com.rylinaux:PlugMan:2.3.3")
 }
 
