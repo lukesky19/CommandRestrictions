@@ -22,7 +22,7 @@ import com.github.lukesky19.commandRestrictions.config.locale.Locale;
 import com.github.lukesky19.commandRestrictions.config.locale.LocaleManager;
 import com.github.lukesky19.commandRestrictions.config.settings.Settings;
 import com.github.lukesky19.commandRestrictions.config.settings.SettingsManager;
-import com.github.lukesky19.skylib.format.FormatUtil;
+import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -67,7 +67,7 @@ public class PlayerCommandPreProcessListener implements Listener {
 
         // If the plugin settings is invalid, display and error and return.
         if(settings == null) {
-            logger.error(FormatUtil.format(locale.invalidSettings()));
+            logger.error(AdventureUtil.serialize(locale.invalidSettings()));
             return;
         }
 
@@ -89,18 +89,18 @@ public class PlayerCommandPreProcessListener implements Listener {
                 // While the matcher has a match, process the match based on the configuration.
                 while(matcher.find()) {
                     if(settings.debug()) {
-                        logger.info(FormatUtil.format("Match found for regex: " + regex));
+                        logger.info(AdventureUtil.serialize("Match found for regex: " + regex));
                     }
 
                     // If any match should be blocked, cancel the event here.
                     // Also send the player a message and log the incident to console.
                     if(entry.blockAllMatches()) {
                         if(settings.debug()) {
-                            logger.info(FormatUtil.format("Blocking entire command for regex: " + regex));
+                            logger.info(AdventureUtil.serialize("Blocking entire command for regex: " + regex));
                         }
 
-                        player.sendMessage(FormatUtil.format(locale.prefix() + locale.blockedCommandPlayerMessage()));
-                        logger.warn(FormatUtil.format(locale.blockedCommandConsoleMessage(), placeholders));
+                        player.sendMessage(AdventureUtil.serialize(locale.prefix() + locale.blockedCommandPlayerMessage()));
+                        logger.warn(AdventureUtil.serialize(locale.blockedCommandConsoleMessage(), placeholders));
                         playerCommandPreprocessEvent.setCancelled(true);
                         return;
                     } else {
@@ -109,16 +109,16 @@ public class PlayerCommandPreProcessListener implements Listener {
                             String group = matcher.group(i);
 
                             if(settings.debug()) {
-                                logger.info(FormatUtil.format("Processing group number " + i + " with text: " + group));
+                                logger.info(AdventureUtil.serialize("Processing group number " + i + " with text: " + group));
                             }
 
                             if(entry.blockedText().contains(group)) {
                                 if(settings.debug()) {
-                                    logger.info(FormatUtil.format("Group number " + i + " contained blocked text. Blocked text: " + group));
+                                    logger.info(AdventureUtil.serialize("Group number " + i + " contained blocked text. Blocked text: " + group));
                                 }
 
-                                player.sendMessage(FormatUtil.format(locale.prefix() + locale.blockedCommandPlayerMessage()));
-                                logger.warn(FormatUtil.format(locale.blockedTextConsoleMessage(), placeholders));
+                                player.sendMessage(AdventureUtil.serialize(locale.prefix() + locale.blockedCommandPlayerMessage()));
+                                logger.warn(AdventureUtil.serialize(locale.blockedTextConsoleMessage(), placeholders));
                                 playerCommandPreprocessEvent.setCancelled(true);
                                 return;
                             }
@@ -127,7 +127,7 @@ public class PlayerCommandPreProcessListener implements Listener {
                 }
             } else {
                 // Display and error if no regex is configured.
-                logger.error(FormatUtil.format(locale.invalidRegex()));
+                logger.error(AdventureUtil.serialize(locale.invalidRegex()));
             }
         });
     }

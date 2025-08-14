@@ -18,8 +18,8 @@
 package com.github.lukesky19.commandRestrictions.config.settings;
 
 import com.github.lukesky19.commandRestrictions.CommandRestrictions;
-import com.github.lukesky19.skylib.config.ConfigurationUtility;
-import com.github.lukesky19.skylib.format.FormatUtil;
+import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
+import com.github.lukesky19.skylib.api.configurate.ConfigurationUtility;
 import com.github.lukesky19.skylib.libs.configurate.ConfigurateException;
 import com.github.lukesky19.skylib.libs.configurate.serialize.SerializationException;
 import com.github.lukesky19.skylib.libs.configurate.yaml.YamlConfigurationLoader;
@@ -73,9 +73,9 @@ public class SettingsManager {
         } catch (SerializationException e) {
             throw new RuntimeException(e);
         } catch (ConfigurateException configurateException) {
-            logger.error(FormatUtil.format("<red>Failed to load plugin settings.</red>"));
+            logger.error(AdventureUtil.serialize("<red>Failed to load plugin settings.</red>"));
             if(configurateException.getMessage() != null) {
-                logger.error(FormatUtil.format(configurateException.getMessage()));
+                logger.error(AdventureUtil.serialize(configurateException.getMessage()));
             }
         }
     }
