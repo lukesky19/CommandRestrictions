@@ -57,14 +57,14 @@ public class CommandRestrictionsCommand {
             .requires(ctx -> ctx.getSender().hasPermission("commandrestrictions.commands.commandrestrictions.reload"))
             .executes(ctx -> {
                 ComponentLogger logger = commandRestrictions.getComponentLogger();
-                Locale locale = localeManager.getLocale();
+                Locale locale = localeManager.getConfiguration();
 
                 commandRestrictions.reload();
 
                 if(ctx.getSource().getSender() instanceof Player player) {
-                    player.sendMessage(AdventureUtil.serialize(locale.prefix() + locale.reload()));
+                    player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.reload()));
                 } else {
-                    logger.info(AdventureUtil.serialize(locale.reload()));
+                    logger.info(AdventureUtil.deserialize(locale.reload()));
                 }
 
                 return 1;

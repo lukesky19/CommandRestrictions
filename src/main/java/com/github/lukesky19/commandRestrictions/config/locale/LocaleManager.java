@@ -21,11 +21,9 @@ import com.github.lukesky19.commandRestrictions.CommandRestrictions;
 import com.github.lukesky19.commandRestrictions.config.settings.Settings;
 import com.github.lukesky19.commandRestrictions.config.settings.SettingsManager;
 import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skylib.api.configurate.ConfigurationUtility;
-import com.github.lukesky19.skylib.libs.configurate.ConfigurateException;
-import com.github.lukesky19.skylib.libs.configurate.yaml.YamlConfigurationLoader;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import org.jetbrains.annotations.NotNull;
+import com.github.lukesky19.skylib.api.common.abstracts.config.SimpleConfigManager;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -33,12 +31,10 @@ import java.nio.file.Path;
 /**
  * This class manages the plugin's locale.
  */
-public class LocaleManager {
-    private final CommandRestrictions commandRestrictions;
+public class LocaleManager extends SimpleConfigManager<Locale> {
     private final SettingsManager settingsManager;
-    private Locale locale;
     private final Locale DEFAULT_LOCALE = new Locale(
-            "1.0.0.0",
+            1,
             "<dark_red><bold>Security</bold></dark_red> <gray><bold>▪</bold></gray> ",
             "<aqua>The plugin has been reloaded.</aqua>",
             "<red>Unable to compare command ran due to invalid plugin settings.</red>",
@@ -48,111 +44,95 @@ public class LocaleManager {
             "<red>Blocked a command containing blocked text:</red> <white><command></white>");
 
     /**
-     * Gets the configured locale or the default locale.
-     * @return A {@link Locale} object.
-     */
-    @NotNull
-    public Locale getLocale() {
-        if(locale == null) return DEFAULT_LOCALE;
-
-        return locale;
-    }
-
-    /**
      * Constructor
      * @param commandRestrictions The plugin's class
      * @param settingsManager A {@link SettingsManager} instance.
      */
     public LocaleManager(
-            @NotNull CommandRestrictions commandRestrictions,
-            @NotNull SettingsManager settingsManager) {
-        this.commandRestrictions = commandRestrictions;
+            @NonNull CommandRestrictions commandRestrictions,
+            @NonNull SettingsManager settingsManager) {
+        super(commandRestrictions, Locale.class);
         this.settingsManager = settingsManager;
     }
 
     /**
-     * A method to reload the plugin's locale config.
+     * Gets the plugin's locale if not null or the default locale otherwise.
+     * @return The plugin's locale if not null or the default locale otherwise.
      */
-    public void reload() {
-        ComponentLogger logger = commandRestrictions.getComponentLogger();
-        locale = null;
+    @Override
+    public @NonNull Locale getConfiguration() {
+        if(configuration == null) return DEFAULT_LOCALE;
+        return configuration;
+    }
 
-        // Save any default locale files if it doesn't exist on the disk.
-        copyDefaultLocales();
-
-        // Only load locale if plugin settings is valid.
-        Settings settings = settingsManager.getSettings();
-        if(settings == null || settings.locale() == null) {
-            logger.error(AdventureUtil.serialize("<red>Failed to load plugin's locale due to invalid plugin settings.</red>"));
+    @Override
+    public void loadConfiguration() {
+        Settings settings = settingsManager.getConfiguration();
+        if(settings == null) {
+            logger.error(AdventureUtil.deserialize("<red>Failed to load plugin's locale due to plugin settings being null.</red>"));
+            return;
+        }
+        if(settings.locale() == null) {
+            logger.error(AdventureUtil.deserialize("<red>Failed to load plugin's locale to use in settings.yml is null.</red>"));
             return;
         }
 
-        // Get the configured locale to use
         String localeString = settings.locale();
-        Path path = Path.of(commandRestrictions.getDataFolder() + File.separator + "locale" + File.separator + (localeString + ".yml"));
+        Path path = Path.of(plugin.getDataFolder() + File.separator + "locale" + File.separator + (localeString + ".yml"));
+        setConfigurationPath(path);
 
-        // Attempt to load the configured locale.
-        YamlConfigurationLoader loader = ConfigurationUtility.getYamlConfigurationLoader(path);
-        try {
-            locale = loader.load().get(Locale.class);
-        } catch (ConfigurateException exception) {
-            throw new RuntimeException(exception);
-        }
-
-        // Validate the configured locale that was loaded.
-        validateLocale();
+        super.loadConfiguration();
     }
 
-    /**
-     * Copies the default locale files that come bundled with the plugin, if they do not exist at least.
-     */
-    private void copyDefaultLocales() {
-        Path path = Path.of(commandRestrictions.getDataFolder() + File.separator + "locale" + File.separator + "en_US.yml");
-        if (!path.toFile().exists()) {
-            commandRestrictions.saveResource("locale" + File.separator + "en_US.yml", false);
+    @Override
+    public void saveBundledConfig() {
+        Path path = Path.of(plugin.getDataFolder() + File.separator + "locale" + File.separator + "en_US.yml");
+        if(!path.toFile().exists()) {
+            plugin.saveResource("locale" + File.separator + "en_US.yml", false);
         }
     }
 
     /**
-     * Validates the plugin's locale.
+     * Migrate the locale.
+     * @param locale The {@link Locale} to migrate.
+     * @return The migrated {@link Locale} or null if migration failed.
      */
-    private void validateLocale() {
-        ComponentLogger logger = commandRestrictions.getComponentLogger();
-        if(locale == null) return;
-
-        if(locale.prefix() == null) {
-            logger.warn(AdventureUtil.serialize("No prefix configured in locale file."));
-            locale = DEFAULT_LOCALE;
-            return;
+    @Override
+    public @Nullable Locale migrateConfiguration(@NonNull Locale locale) {
+        if(locale.version() == 0) {
+            return new Locale(
+                    1,
+                    locale.prefix(),
+                    locale.reload(),
+                    locale.invalidSettings(),
+                    locale.invalidRegex(),
+                    locale.blockedCommandPlayerMessage(),
+                    locale.blockedCommandConsoleMessage(),
+                    locale.blockedTextConsoleMessage());
         }
 
-        if(locale.invalidSettings() == null) {
-            logger.warn(AdventureUtil.serialize("No invalid settings message configured in locale file."));
-            locale = DEFAULT_LOCALE;
-            return;
+        return locale;
+    }
+
+    /**
+     * Validates if the locale is missing any strings.
+     */
+    @Override
+    public boolean validateConfiguration(@Nullable Locale configuration) {
+        if(configuration == null) return false;
+
+        if(configuration.prefix() == null
+                || configuration.invalidSettings() == null
+                || configuration.invalidRegex() == null
+                || configuration.blockedCommandPlayerMessage() == null
+                || configuration.blockedCommandConsoleMessage() == null
+                || configuration.blockedTextConsoleMessage() == null) {
+            logger.error(AdventureUtil.deserialize("Your locale is missing one of the plugin's messages. The default locale will be used."));
+            logger.info(AdventureUtil.deserialize("You can regenerate your locale file by deleting it or adding the missing messages to resolve the issue."));
+
+            return false;
         }
 
-        if(locale.invalidRegex() == null) {
-            logger.warn(AdventureUtil.serialize("No invalid regex message configured in locale file."));
-            locale = DEFAULT_LOCALE;
-            return;
-        }
-
-        if(locale.blockedCommandPlayerMessage() == null) {
-            logger.warn(AdventureUtil.serialize("No blocked player message configured in locale file."));
-            locale = DEFAULT_LOCALE;
-            return;
-        }
-
-        if(locale.blockedCommandConsoleMessage() == null) {
-            logger.warn(AdventureUtil.serialize("No blocked command console message configured in locale file."));
-            locale = DEFAULT_LOCALE;
-            return;
-        }
-
-        if(locale.blockedTextConsoleMessage() == null) {
-            logger.warn(AdventureUtil.serialize("No blocked text console message configured in locale file."));
-            locale = DEFAULT_LOCALE;
-        }
+        return true;
     }
 }

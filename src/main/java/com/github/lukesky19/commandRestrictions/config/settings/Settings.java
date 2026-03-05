@@ -18,25 +18,25 @@
 package com.github.lukesky19.commandRestrictions.config.settings;
 
 import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
 /**
  * This class represents the plugin settings.
- * @param configVersion The version of the file.
+ * @param version The version of the file.
  * @param debug Whether to display debug messages or not.
  * @param locale The name of the locale to use.
  * @param entries A list of {@link Entry}.
  */
 @ConfigSerializable
 public record Settings(
-        @Nullable String configVersion,
+        int version,
         boolean debug,
         @Nullable String locale,
-        @NotNull List<Entry> entries) {
+        @NonNull List<Entry> entries) {
     /**
      * This entry represents the configuration required to block a command.
      * @param regex The regex to check for.
@@ -47,6 +47,6 @@ public record Settings(
     public record Entry(
             @Nullable Pattern regex,
             boolean blockAllMatches,
-            @NotNull List<String> blockedText) {
+            @NonNull List<String> blockedText) {
     }
 }

@@ -13,7 +13,7 @@
 
 ## Permisisons
 - `commandrestrictions.commands.commandrestrictions` - The permission to access the /commandrestrictions base command.
-- `commandrestrictions.commands.commandrestrictions` - The permission to access /commandrestrictions reload.
+- `commandrestrictions.commands.commandrestrictions.reload` - The permission to access /commandrestrictions reload.
 
 ## Issues, Bugs, or Suggestions
 * Please create a new [GitHub Issue](https://github.com/lukesky19/CommandRestrictions/issues) with your issue, bug, or suggestion.
@@ -23,7 +23,7 @@
 ## FAQ
 Q: What versions does this plugin support?
 
-A: 1.21.4, 1.21.5, 1.21.6, 1.21.7, and 1.21.8.
+A: 1.21.4, 1.21.5, 1.21.6, 1.21.7, 1.21.8, 1.21.9, 1.21.10, and 1.21.11.
 
 Q: Are there any plans to support any other versions?
 

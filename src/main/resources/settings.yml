@@ -1,4 +1,4 @@
-config-version: 1.0.0.0
+version: 1
 # For development purposes only. May be useful for debugging regex though.
 debug: false
 # The name of the file (without the extension) to use from CommandRestrictions/locale

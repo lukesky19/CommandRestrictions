@@ -1,4 +1,4 @@
-config-version: 1.0.0.0
+version: 1
 prefix: "<dark_red><bold>CommandRestrictions</bold></dark_red> <gray><bold>▪</bold></gray> "
 reload: "<aqua>The plugin has been reloaded.</aqua>"
 invalid-settings: "<red>Unable to compare command ran due to invalid plugin settings.</red>"

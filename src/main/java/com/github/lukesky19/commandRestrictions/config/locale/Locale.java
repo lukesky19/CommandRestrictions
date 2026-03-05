@@ -21,7 +21,7 @@ import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializ
 
 /**
  * This class represents the plugin's locale messages.
- * @param configVersion The version of the file.
+ * @param version The version of the file.
  * @param prefix The plugin's prefix.
  * @param reload The message sent when the plugin is reloaded.
  * @param invalidSettings The message sent when the plugin's settings is invalid.
@@ -32,7 +32,7 @@ import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializ
  */
 @ConfigSerializable
 public record Locale(
-        String configVersion,
+        int version,
         String prefix,
         String reload,
         String invalidSettings,

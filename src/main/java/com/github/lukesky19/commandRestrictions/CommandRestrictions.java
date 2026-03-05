@@ -22,18 +22,18 @@ import com.github.lukesky19.commandRestrictions.config.locale.LocaleManager;
 import com.github.lukesky19.commandRestrictions.config.settings.SettingsManager;
 import com.github.lukesky19.commandRestrictions.listener.PlayerCommandPreProcessListener;
 import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
+import com.github.lukesky19.skylib.api.common.abstracts.SkyPlugin;
 import com.rylinaux.plugman.api.PlugManAPI;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
 /**
  * The main plugin class.
  */
-public class CommandRestrictions extends JavaPlugin {
+public class CommandRestrictions extends SkyPlugin {
     private SettingsManager settingsManager;
     private LocaleManager localeManager;
 
@@ -70,8 +70,8 @@ public class CommandRestrictions extends JavaPlugin {
      * Reloads plugin data.
      */
     public void reload() {
-        settingsManager.reload();
-        localeManager.reload();
+        settingsManager.loadConfiguration();
+        localeManager.loadConfiguration();
     }
 
     /**
@@ -86,12 +86,12 @@ public class CommandRestrictions extends JavaPlugin {
             String[] splitVersion = version.split("\\.");
             int second = Integer.parseInt(splitVersion[1]);
 
-            if(second >= 3) {
+            if(second >= 5) {
                 return true;
             }
         }
 
-        this.getComponentLogger().error(AdventureUtil.serialize("SkyLib Version 1.3.0.0 or newer is required to run this plugin."));
+        this.getComponentLogger().error(AdventureUtil.deserialize("SkyLib Version 1.5.0.0 or newer is required to run this plugin."));
         this.getServer().getPluginManager().disablePlugin(this);
         return false;
     }

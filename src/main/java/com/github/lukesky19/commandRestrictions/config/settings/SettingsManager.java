@@ -17,14 +17,11 @@
 */
 package com.github.lukesky19.commandRestrictions.config.settings;
 
-import com.github.lukesky19.commandRestrictions.CommandRestrictions;
 import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skylib.api.configurate.ConfigurationUtility;
-import com.github.lukesky19.skylib.libs.configurate.ConfigurateException;
-import com.github.lukesky19.skylib.libs.configurate.serialize.SerializationException;
-import com.github.lukesky19.skylib.libs.configurate.yaml.YamlConfigurationLoader;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import org.jetbrains.annotations.Nullable;
+import com.github.lukesky19.skylib.api.common.abstracts.SkyPlugin;
+import com.github.lukesky19.skylib.api.common.abstracts.config.SimpleConfigManager;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -32,51 +29,40 @@ import java.nio.file.Path;
 /**
  * This class manages the plugin's settings.
  */
-public class SettingsManager {
-    private final CommandRestrictions commandRestrictions;
-    private Settings settings;
-
+public class SettingsManager extends SimpleConfigManager<Settings> {
     /**
      * Constructor
-     * @param commandRestrictions The plugin class.
+     * @param plugin A {@link SkyPlugin}.
      */
-    public SettingsManager(CommandRestrictions commandRestrictions) {
-        this.commandRestrictions = commandRestrictions;
+    public SettingsManager(@NonNull SkyPlugin plugin) {
+        super(plugin, Path.of(plugin.getDataFolder() + File.separator + "settings.yml"), Settings.class);
     }
 
-    /**
-     * A getter to get the plugin's settings.
-     * @return A Settings object that represents the plugin's settings.
-     */
-    @Nullable
-    public Settings getSettings() {
+    @Override
+    public void saveBundledConfig() {
+        plugin.saveResource("settings.yml", false);
+    }
+
+    @Override
+    public @Nullable Settings migrateConfiguration(@NonNull Settings settings) {
+        if(settings.version() == 0) {
+            return new Settings(1, settings.debug(), settings.locale(), settings.entries());
+        }
+
         return settings;
     }
 
-    /**
-     * A method to reload the plugin's settings config.
-     */
-    public void reload() {
-        ComponentLogger logger = commandRestrictions.getComponentLogger();
-        settings = null;
+    @Override
+    public boolean validateConfiguration(@Nullable Settings configuration) {
+        if(configuration == null) return false;
 
-        Path path = Path.of(commandRestrictions.getDataFolder() + File.separator + "settings.yml");
-        // Save default settings if it doesn't exist on the disk.
-        if (!path.toFile().exists()) {
-            commandRestrictions.saveResource("settings.yml", false);
+        if(configuration.locale() == null) {
+            logger.error(AdventureUtil.deserialize("Your settings.yml is missing a defined locale."));
+            logger.info(AdventureUtil.deserialize("You can regenerate your settings file by deleting it or defining the locale to use to resolve the issue."));
+
+            return false;
         }
 
-        // Attempt to load the configured plugin settings.
-        YamlConfigurationLoader loader = ConfigurationUtility.getYamlConfigurationLoader(path);
-        try {
-            settings = loader.load().get(Settings.class);
-        } catch (SerializationException e) {
-            throw new RuntimeException(e);
-        } catch (ConfigurateException configurateException) {
-            logger.error(AdventureUtil.serialize("<red>Failed to load plugin settings.</red>"));
-            if(configurateException.getMessage() != null) {
-                logger.error(AdventureUtil.serialize(configurateException.getMessage()));
-            }
-        }
+        return true;
     }
 }
