@@ -21,8 +21,8 @@ import com.github.lukesky19.commandRestrictions.command.CommandRestrictionsComma
 import com.github.lukesky19.commandRestrictions.config.locale.LocaleManager;
 import com.github.lukesky19.commandRestrictions.config.settings.SettingsManager;
 import com.github.lukesky19.commandRestrictions.listener.PlayerCommandPreProcessListener;
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
-import com.github.lukesky19.skylib.api.common.abstracts.SkyPlugin;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
+import com.github.lukesky19.skylib.paper.api.plugin.SkyPlugin;
 import com.rylinaux.plugman.api.PlugManAPI;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.Plugin;
@@ -84,14 +84,14 @@ public class CommandRestrictions extends SkyPlugin {
         if (skyLib != null) {
             String version = skyLib.getPluginMeta().getVersion();
             String[] splitVersion = version.split("\\.");
-            int second = Integer.parseInt(splitVersion[1]);
+            int first = Integer.parseInt(splitVersion[0]);
 
-            if(second >= 5) {
+            if(first >= 2) {
                 return true;
             }
         }
 
-        this.getComponentLogger().error(AdventureUtil.deserialize("SkyLib Version 1.5.0.0 or newer is required to run this plugin."));
+        this.getComponentLogger().error(AdventureUtility.plain("SkyLib Version 2.0.0.0 or newer is required to run this plugin."));
         this.getServer().getPluginManager().disablePlugin(this);
         return false;
     }

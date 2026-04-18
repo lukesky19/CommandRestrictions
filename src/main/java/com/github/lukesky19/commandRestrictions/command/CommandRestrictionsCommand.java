@@ -20,7 +20,7 @@ package com.github.lukesky19.commandRestrictions.command;
 import com.github.lukesky19.commandRestrictions.CommandRestrictions;
 import com.github.lukesky19.commandRestrictions.config.locale.Locale;
 import com.github.lukesky19.commandRestrictions.config.locale.LocaleManager;
-import com.github.lukesky19.skylib.api.adventure.AdventureUtil;
+import com.github.lukesky19.skylib.common.api.adventure.AdventureUtility;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -62,9 +62,9 @@ public class CommandRestrictionsCommand {
                 commandRestrictions.reload();
 
                 if(ctx.getSource().getSender() instanceof Player player) {
-                    player.sendMessage(AdventureUtil.deserialize(locale.prefix() + locale.reload()));
+                    player.sendMessage(AdventureUtility.deserialize(locale.prefix() + locale.reload()));
                 } else {
-                    logger.info(AdventureUtil.deserialize(locale.reload()));
+                    logger.info(AdventureUtility.deserialize(locale.reload()));
                 }
 
                 return 1;

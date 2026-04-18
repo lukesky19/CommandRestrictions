@@ -1,10 +1,10 @@
 plugins {
-    java
-    id("com.gradleup.shadow") version "8.3.0"
+    `java-library`
+    id("com.gradleup.shadow") version "9.4.1"
 }
 
 group = "com.github.lukesky19"
-version = "1.2.0.0"
+version = "1.3.0.0"
 
 repositories {
     mavenLocal()
@@ -21,28 +21,35 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
-    compileOnly("com.github.lukesky19:SkyLib:1.5.0.0")
+    // Paper
+    compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+
+    // SkyLib
+    compileOnly("com.github.lukesky19:SkyLib:2.0.0.0")
+
+    // Plugman
     compileOnly("com.rylinaux:PlugMan:2.3.3")
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
 }
 
-tasks.processResources {
-    val props = mapOf("version" to version)
-    inputs.properties(props)
-    filteringCharset = "UTF-8"
-    filesMatching("plugin.yml") {
-        expand(props)
-    }
-}
-
-tasks.jar {
-    manifest {
-        attributes["paperweight-mappings-namespace"] = "mojang"
+tasks {
+    processResources {
+        val props = mapOf("version" to version)
+        inputs.properties(props)
+        filteringCharset = "UTF-8"
+        filesMatching("plugin.yml") {
+            expand(props)
+        }
     }
 
-    archiveClassifier.set("")
+    jar {
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "mojang"
+        }
+
+        archiveClassifier.set("")
+    }
 }

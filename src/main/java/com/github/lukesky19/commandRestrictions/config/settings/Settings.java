@@ -17,9 +17,9 @@
 */
 package com.github.lukesky19.commandRestrictions.config.settings;
 
-import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializable;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import com.github.lukesky19.skylib.libs.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
 import java.util.regex.Pattern;
