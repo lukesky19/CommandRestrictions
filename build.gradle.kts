@@ -1,6 +1,5 @@
 plugins {
     `java-library`
-    id("com.gradleup.shadow") version "9.4.1"
 }
 
 group = "com.github.lukesky19"
